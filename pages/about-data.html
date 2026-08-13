@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en-MY">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About the Data — Hospital Compare Malaysia</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="../assets/css/main.css" />
+  <style>
+    .about-hero { background:linear-gradient(135deg,var(--blue-800),var(--blue-700));padding:var(--space-10) 0;color:white; }
+    .about-hero h1 { font-family:var(--font-display);font-weight:800;font-size:var(--text-3xl);color:white;margin-bottom:var(--space-2); }
+    .about-hero p { color:rgba(255,255,255,.7); }
+    .about-body { padding:var(--space-10) 0;max-width:780px;margin:0 auto; }
+    .about-section { margin-bottom:var(--space-8); }
+    .about-section h2 { font-family:var(--font-display);font-weight:700;font-size:var(--text-2xl);color:var(--grey-900);margin-bottom:var(--space-4); }
+    .about-section h3 { font-family:var(--font-display);font-weight:700;font-size:var(--text-lg);color:var(--grey-800);margin:var(--space-5) 0 var(--space-2); }
+    .about-section p { font-size:var(--text-sm);color:var(--grey-600);line-height:1.9;margin-bottom:var(--space-3); }
+    .about-section ul { list-style:disc;margin-left:var(--space-5);margin-bottom:var(--space-3); }
+    .about-section ul li { font-size:var(--text-sm);color:var(--grey-600);line-height:1.9; }
+    .update-steps { counter-reset:steps; }
+    .update-step { display:flex;gap:var(--space-4);margin-bottom:var(--space-4);align-items:flex-start; }
+    .update-step::before { counter-increment:steps;content:counter(steps);display:flex;align-items:center;justify-content:center;width:32px;height:32px;border-radius:50%;background:var(--color-primary);color:white;font-weight:700;font-size:var(--text-sm);flex-shrink:0; }
+    .update-step-content { flex:1; }
+    .update-step-title { font-weight:700;color:var(--grey-900);margin-bottom:4px;font-size:var(--text-sm); }
+    .update-step-desc { font-size:var(--text-sm);color:var(--grey-600);line-height:1.7; }
+    .info-box { background:var(--blue-50);border:1px solid var(--blue-100);border-radius:var(--radius-lg);padding:var(--space-4);margin:var(--space-4) 0;font-size:var(--text-sm);color:var(--blue-700);line-height:1.7; }
+    .warning-box { background:var(--color-warning-bg);border:1px solid #fcd34d;border-radius:var(--radius-lg);padding:var(--space-4);margin:var(--space-4) 0;font-size:var(--text-sm);color:#92400e;line-height:1.7; }
+  </style>
+</head>
+<body>
+  <header class="site-header" role="banner">
+    <div class="container header-inner">
+      <a href="../index.html" class="site-logo">
+        <div class="logo-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
+        <div class="logo-text"><span class="logo-title">Hospital Compare Malaysia</span><span class="logo-sub">Kementerian Kesihatan Malaysia</span></div>
+      </a>
+      <nav class="site-nav">
+        <a href="../index.html" class="nav-link">Home</a>
+        <a href="hospitals.html" class="nav-link">Find Hospitals</a>
+        <a href="compare.html" class="nav-link">Compare</a>
+        <a href="methodology.html" class="nav-link">Methodology</a>
+        <a href="about-data.html" class="nav-link active">About Data</a>
+      </nav>
+      <button class="mobile-menu-btn" aria-label="Open navigation"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg></button>
+    </div>
+  </header>
+
+  <section class="about-hero">
+    <div class="container">
+      <h1>About the Data</h1>
+      <p>Where the data comes from, what it means, and how it is kept up to date.</p>
+    </div>
+  </section>
+
+  <main id="main-content">
+    <div class="container">
+      <div class="about-body">
+
+        <section class="about-section">
+          <h2>Data Source</h2>
+          <p>All hospital quality data displayed on this platform is sourced from <strong>Kementerian Kesihatan Malaysia (KKM)</strong> — the Ministry of Health Malaysia.</p>
+          <p>The data includes HPIA (Hospital Performance Indicator Assessment), CliSQI, Cluster Performance, MyPSQ/PSQ-18 patient satisfaction, and Casemix indicators collected and published by KKM as part of its hospital performance monitoring programme.</p>
+          <div class="info-box">
+            📋 <strong>Official source:</strong> Kementerian Kesihatan Malaysia (KKM) Hospital Performance Data.<br>
+            This platform presents KKM data in a citizen-friendly format. It is not operated by KKM.
+          </div>
+        </section>
+
+        <section class="about-section">
+          <h2>Reporting Period</h2>
+          <p>Each hospital record shows the reporting year for which data is available. Not all hospitals have data for the same year — some may have more recent data, others may be pending submission.</p>
+          <p>The reporting year is displayed on every hospital page:</p>
+          <ul>
+            <li><strong>Data year</strong> — the year to which the performance data relates</li>
+            <li><strong>Last updated</strong> — when this record was last updated in the dataset</li>
+          </ul>
+          <p>This platform never presents old data as if it were current. Where data is from a prior period, the year is always shown.</p>
+        </section>
+
+        <section class="about-section">
+          <h2>What the Data Does and Does Not Show</h2>
+          <h3>What it shows</h3>
+          <ul>
+            <li>Hospital performance across standardised KKM indicators</li>
+            <li>Patient-reported satisfaction from the MyPSQ/PSQ-18 survey</li>
+            <li>Clinical services quality from CliSQI</li>
+            <li>Cluster collaboration performance</li>
+            <li>Casemix complexity and resource performance</li>
+          </ul>
+          <h3>What it does not show</h3>
+          <ul>
+            <li>Individual patient records or outcomes</li>
+            <li>Real-time bed availability or waiting times</li>
+            <li>Private hospital data</li>
+            <li>Guarantee of individual clinical outcomes</li>
+            <li>Emergency triage capability or response times</li>
+          </ul>
+          <div class="warning-box">
+            ⚠️ <strong>This is not medical advice.</strong> Hospital performance indicators support informed comparison and should not be used as the sole basis for hospital selection. In an emergency, contact 999 or go to your nearest emergency department immediately.
+          </div>
+        </section>
+
+        <section class="about-section">
+          <h2>Missing Data</h2>
+          <p>Not all hospitals have complete data for every indicator. This may be because:</p>
+          <ul>
+            <li>The hospital did not submit data for that indicator in the current reporting period</li>
+            <li>The indicator is not applicable to that hospital type</li>
+            <li>Data collection is in progress</li>
+            <li>Data has been suppressed due to small numbers</li>
+          </ul>
+          <p>Missing values are <strong>never</strong> shown as zero. The platform uses clear labels: <em>Not available</em>, <em>Not applicable</em>, <em>Pending</em>, etc. See the <a href="methodology.html#data-quality">Data Quality section</a> of the Methodology page for full definitions.</p>
+        </section>
+
+        <section class="about-section">
+          <h2>How to Update the Data</h2>
+          <p>The dataset is maintained via a Google Sheet. When new KKM data is published, update the Google Sheet and the website updates automatically.</p>
+          <div class="update-steps">
+            <div class="update-step">
+              <div class="update-step-content">
+                <div class="update-step-title">Update the Google Sheet</div>
+                <div class="update-step-desc">Add or update hospital rows with new indicator data. Use the approved status codes for missing values. Never use 0 for missing data.</div>
+              </div>
+            </div>
+            <div class="update-step">
+              <div class="update-step-content">
+                <div class="update-step-title">Verify the data</div>
+                <div class="update-step-desc">Check that all required fields are complete, coordinates are within Malaysia, and scores are within the 0–5 range.</div>
+              </div>
+            </div>
+            <div class="update-step">
+              <div class="update-step-content">
+                <div class="update-step-title">Export to JSON</div>
+                <div class="update-step-desc">If using direct Google Sheets fetch mode, the site updates automatically. If using the JSON file, replace <code>data/hospitals.json</code> with the new export.</div>
+              </div>
+            </div>
+            <div class="update-step">
+              <div class="update-step-content">
+                <div class="update-step-title">Commit to GitHub</div>
+                <div class="update-step-desc">Push the updated JSON file to the GitHub repository. GitHub Pages will deploy automatically within a few minutes.</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="about-section">
+          <h2>Source Data vs Displayed Data</h2>
+          <p>This platform distinguishes between:</p>
+          <ul>
+            <li><strong>Source data</strong> — the original values from the KKM dataset (e.g. an official score of 4.52)</li>
+            <li><strong>Displayed data</strong> — how values are formatted for readability (e.g. displayed as 4.5 / ★★★★½)</li>
+          </ul>
+          <p>Where an authoritative overall score is supplied by KKM, that official score is used. Calculated composite scores are only used where KKM has not provided one.</p>
+        </section>
+
+        <section class="about-section">
+          <h2>Limitations</h2>
+          <ul>
+            <li>Hospital performance data reflects aggregated institutional performance, not individual clinician quality</li>
+            <li>Rankings and comparisons are based on the available dataset and reporting year</li>
+            <li>Some hospitals may not have reported for the most recent year</li>
+            <li>Patient satisfaction data reflects survey respondents and may not represent all patients</li>
+            <li>Casemix data should be interpreted relative to hospital type and case complexity, not as an absolute quality measure</li>
+          </ul>
+        </section>
+
+        <section class="about-section">
+          <h2>Contact & Feedback</h2>
+          <p>For questions about the underlying data, contact <strong>Kementerian Kesihatan Malaysia</strong> through the official KKM channels.</p>
+          <p>For questions about this platform, raise an issue on the GitHub repository.</p>
+        </section>
+
+      </div>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-bottom" style="border-top:none;padding-top:0">
+        <span>© <script>document.write(new Date().getFullYear())</script> Hospital Compare Malaysia</span>
+        <span>Data: Ministry of Health Malaysia (KKM)</span>
+      </div>
+    </div>
+  </footer>
+  <script src="../assets/js/sheets.js"></script>
+  <script src="../assets/js/config.js"></script>
+  <script src="../assets/js/app.js"></script>
+</body>
+</html>
