@@ -1,91 +1,62 @@
 /**
- * ╔══════════════════════════════════════════════════════════╗
- * ║  HOSPITAL COMPARE MALAYSIA — Configuration               ║
- * ║                                                          ║
- * ║  THIS IS THE ONLY FILE YOU NEED TO EDIT.                ║
- * ║                                                          ║
- * ║  Step 1: Open your Google Sheet                         ║
- * ║  Step 2: Share → Anyone with the link → Viewer          ║
- * ║  Step 3: Copy the Sheet ID from the URL                 ║
- * ║           URL: .../spreadsheets/d/ [COPY THIS] /edit    ║
- * ║  Step 4: Paste it as GOOGLE_SHEET_ID below              ║
- * ║  Step 5: Save and commit this file on GitHub            ║
- * ║                                                          ║
- * ║  Done! The site now reads live from your Google Sheet.  ║
- * ║  Every refresh = latest data from the sheet.            ║
- * ╚══════════════════════════════════════════════════════════╝
+ * HOSPITAL COMPARE MALAYSIA — Configuration
+ * ==========================================
+ * Edit GOOGLE_SHEET_ID below with your actual Sheet ID.
+ * Everything else works automatically.
  */
 
 const SITE_CONFIG = {
 
-  // ── YOUR GOOGLE SHEET ─────────────────────────────────────
-  //
-  //  Paste your Sheet ID here.
-  //  Find it in your Google Sheet URL:
-  //  https://docs.google.com/spreadsheets/d/  SHEET_ID  /edit
-  //
+  // ── YOUR GOOGLE SHEET ID ────────────────────────────────────
+  // From your sheet URL: .../spreadsheets/d/ [THIS PART] /edit
   GOOGLE_SHEET_ID: '1SftF7z--q62-Ipfq6k9NIu-2Wed9c6EM92NCHL5fX94',
 
-  //  Names of the tabs in your Google Sheet.
-  //  The first tab is required. The others are optional.
-  //
+  // Tab names in your Google Sheet
   SHEET_TABS: {
-    hospitals:         'hospitals',        // REQUIRED — main data tab
-    mypsq_trend:       'mypsq_trend',      // optional — yearly trend data
-    hpia_indicators:   'hpia_indicators',  // optional — individual HPIA sub-scores
-    clisqi_indicators: 'clisqi_indicators',// optional — individual CliSQI sub-scores
+    hospitals:         'hospitals',         // REQUIRED
+    mypsq_trend:       'mypsq_trend',       // optional — yearly PSQ trend
+    hpia_indicators:   'hpia_indicators',   // optional — HPIA sub-indicators
+    clisqi_indicators: 'clisqi_indicators', // optional — CliSQI sub-indicators
   },
 
-  // ── FALLBACK ───────────────────────────────────────────────
-  //  If GOOGLE_SHEET_ID is not set (still says 'YOUR_SHEET_ID_HERE'),
-  //  the app will load from data/hospitals.json instead.
-  //  This is useful for testing before your sheet is ready.
-  //
-  FALLBACK_JSON: '../data/hospitals.json',
+  // Fallback JSON (used only if Google Sheets fails)
+  FALLBACK_JSON:      '../data/hospitals.json',
   FALLBACK_JSON_ROOT: './data/hospitals.json',
 
-  // ── SITE INFO ──────────────────────────────────────────────
+  // Site info
   SITE_NAME:    'Hospital Compare Malaysia',
   SITE_TAGLINE: 'KKM Hospital Quality & Patient Experience',
   DATA_SOURCE:  'Kementerian Kesihatan Malaysia (KKM)',
 
-  // ── SCORING WEIGHTS ────────────────────────────────────────
-  //  Official KKM HPIA 2025 methodology.
-  //  Only change these if KKM publishes updated weights.
-  //
+  // KKM HPIA 2025 scoring weights — only change if KKM updates methodology
   SCORING_WEIGHTS: {
-    hpia:    0.50,   // 50% — Hospital Performance Indicator Assessment
-    cluster: 0.25,   // 25% — Cluster Hospital Performance
-    mypsq:   0.15,   // 15% — Patient Satisfaction (PSQ-18)
-    casemix: 0.10,   // 10% — Casemix Performance
+    hpia:    0.50,
+    cluster: 0.25,
+    mypsq:   0.15,
+    casemix: 0.10,
   },
 
-  // ── MAP ────────────────────────────────────────────────────
-  MAP_CENTER:         [4.2105, 108.9758],  // centre of Malaysia
+  // Map
+  MAP_CENTER:         [4.2105, 108.9758],
   MAP_DEFAULT_ZOOM:   6,
   MAP_CLUSTER_RADIUS: 60,
 
-  // ── RESULTS ────────────────────────────────────────────────
+  // Results
   RESULTS_PER_PAGE: 20,
   MAX_COMPARE:      4,
 
-  // ── COLUMN MAP ─────────────────────────────────────────────
-  //  Maps YOUR Google Sheet column headers → app field names.
+  // ── COLUMN MAP ──────────────────────────────────────────────
+  // Left = your Google Sheet column header (exact spelling)
+  // Right = internal field name (do not change)
   //
-  //  LEFT  = exactly what your column header says in the sheet
-  //  RIGHT = internal field name (do not change the right side)
-  //
-  //  Example: if your sheet has "Nama Hospital" instead of "hospital_name":
-  //    Change:  'hospital_name': 'hospital_name',
-  //    To:      'Nama Hospital':  'hospital_name',
-  //
+  // Your current sheet columns are already matched below.
+  // If you add new columns later (phone, website, beds etc.),
+  // just add them here and in your sheet.
   COLUMN_MAP: {
-    // Identity
+    // Identity & location
     'hospital_id':            'hospital_id',
     'hospital_name':          'hospital_name',
     'official_name':          'official_name',
-
-    // Location
     'state':                  'state',
     'district':               'district',
     'town':                   'town',
@@ -94,7 +65,7 @@ const SITE_CONFIG = {
     'latitude':               'latitude',
     'longitude':              'longitude',
 
-    // Contact
+    // Contact — add these columns to your sheet when ready
     'phone':                  'phone',
     'website':                'website',
 
@@ -108,13 +79,13 @@ const SITE_CONFIG = {
     'cluster_role':           'cluster_role',
     'lead_hospital':          'lead_hospital',
 
-    // Operational
+    // Operational — add these columns to your sheet when ready
     'services':               'services',
     'bed_count':              'bed_count',
     'data_year':              'data_year',
     'last_updated':           'last_updated',
 
-    // Overall quality
+    // Overall
     'overall_score':          'overall_score',
     'overall_star_rating':    'overall_star_rating',
 
