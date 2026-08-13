@@ -1,0 +1,286 @@
+{
+  "meta": {
+    "dataset_version": "2025.1",
+    "reporting_year": 2025,
+    "published_date": "2025-01-01",
+    "last_updated": "2025-01-01",
+    "source": "Kementerian Kesihatan Malaysia (KKM)",
+    "methodology_version": "HPIA-2025",
+    "total_hospitals": 3,
+    "note": "DEMO DATA — NOT REAL. Replace with actual KKM dataset."
+  },
+  "scoring_config": {
+    "2025": {
+      "hpia_weight": 0.50,
+      "casemix_weight": 0.10,
+      "cluster_weight": 0.25,
+      "mypsq_weight": 0.15,
+      "version": "HPIA-2025"
+    },
+    "2024": {
+      "hpia_weight": 0.50,
+      "casemix_weight": 0.10,
+      "cluster_weight": 0.25,
+      "mypsq_weight": 0.15,
+      "version": "HPIA-2024"
+    }
+  },
+  "hospitals": [
+    {
+      "hospital_id": "H001",
+      "hospital_name": "Hospital Kuala Lumpur",
+      "official_name": "Hospital Kuala Lumpur",
+      "state": "Kuala Lumpur",
+      "district": "Kuala Lumpur",
+      "town": "Kuala Lumpur",
+      "address": "Jalan Pahang, 50586 Kuala Lumpur",
+      "postcode": "50586",
+      "latitude": 3.1721,
+      "longitude": 101.7058,
+      "phone": "03-26155555",
+      "website": "https://hkl.moh.gov.my",
+      "hospital_type": "Tertiary",
+      "hospital_category": "General",
+      "specialist_status": true,
+      "cluster_name": "Klang Valley Cluster",
+      "cluster_role": "Lead",
+      "lead_hospital": "Hospital Kuala Lumpur",
+      "services": ["Emergency", "Surgery", "Cardiology", "Oncology", "Neurology"],
+      "bed_count": 2500,
+      "data_year": 2025,
+      "last_updated": "2025-01-01",
+      "quality": {
+        "overall_score": 4.6,
+        "overall_star_rating": 4.5,
+        "hpia": {
+          "score": 4.7,
+          "star_rating": 5,
+          "percentile": 92,
+          "reporting_year": 2025,
+          "status": "available",
+          "indicators": [
+            { "name": "Patient Safety", "value": 4.8, "benchmark": 4.2, "target": 4.5, "year": 2025, "status": "above_target" },
+            { "name": "Clinical Effectiveness", "value": 4.6, "benchmark": 4.0, "target": 4.3, "year": 2025, "status": "above_target" },
+            { "name": "Patient Centeredness", "value": 4.7, "benchmark": 4.1, "target": 4.4, "year": 2025, "status": "above_target" }
+          ]
+        },
+        "clisqi": {
+          "score": 4.4,
+          "star_rating": 4,
+          "reporting_year": 2025,
+          "status": "available",
+          "indicators": [
+            { "name": "Surgical Site Infection Rate", "value": 1.2, "benchmark": 2.0, "target": 1.5, "unit": "%", "year": 2025, "status": "above_target" },
+            { "name": "Unplanned Readmission Rate", "value": 3.8, "benchmark": 5.0, "target": 4.0, "unit": "%", "year": 2025, "status": "above_target" }
+          ]
+        },
+        "cluster": {
+          "score": 4.5,
+          "star_rating": 4.5,
+          "reporting_year": 2025,
+          "status": "available",
+          "indicators": [
+            { "name": "Cluster Integration Score", "value": 4.6, "benchmark": 4.0, "year": 2025 },
+            { "name": "Resource Sharing Index", "value": 4.4, "benchmark": 3.8, "year": 2025 }
+          ]
+        },
+        "mypsq": {
+          "score": 4.6,
+          "star_rating": 4.5,
+          "overall_satisfaction_pct": 92,
+          "survey_period": "2025",
+          "response_count": 1248,
+          "reporting_year": 2025,
+          "status": "available",
+          "trend": [
+            { "year": 2022, "score": 4.1, "satisfaction_pct": 82 },
+            { "year": 2023, "score": 4.3, "satisfaction_pct": 86 },
+            { "year": 2024, "score": 4.5, "satisfaction_pct": 90 },
+            { "year": 2025, "score": 4.6, "satisfaction_pct": 92 }
+          ],
+          "indicators": [
+            { "name": "Staff Communication", "value": 4.7, "benchmark": 4.2 },
+            { "name": "Cleanliness", "value": 4.5, "benchmark": 4.0 },
+            { "name": "Wait Time", "value": 4.2, "benchmark": 3.9 },
+            { "name": "Overall Experience", "value": 4.6, "benchmark": 4.1 }
+          ]
+        },
+        "casemix": {
+          "score": 4.2,
+          "star_rating": 4,
+          "case_mix_index": 1.85,
+          "reporting_year": 2025,
+          "status": "available",
+          "indicators": [
+            { "name": "Case Mix Index", "value": 1.85, "benchmark": 1.50 },
+            { "name": "Severity of Illness", "value": 3.2, "benchmark": 2.8 }
+          ]
+        }
+      }
+    },
+    {
+      "hospital_id": "H002",
+      "hospital_name": "Hospital Putrajaya",
+      "official_name": "Hospital Putrajaya",
+      "state": "Putrajaya",
+      "district": "Putrajaya",
+      "town": "Putrajaya",
+      "address": "Precinct 7, 62250 Putrajaya",
+      "postcode": "62250",
+      "latitude": 2.9291,
+      "longitude": 101.6942,
+      "phone": "03-88882000",
+      "website": "https://hpj.moh.gov.my",
+      "hospital_type": "Tertiary",
+      "hospital_category": "General",
+      "specialist_status": true,
+      "cluster_name": "Klang Valley Cluster",
+      "cluster_role": "Non-Lead",
+      "lead_hospital": "Hospital Kuala Lumpur",
+      "services": ["Emergency", "Surgery", "Cardiology", "Paediatrics"],
+      "bed_count": 700,
+      "data_year": 2025,
+      "last_updated": "2025-01-01",
+      "quality": {
+        "overall_score": 4.3,
+        "overall_star_rating": 4.0,
+        "hpia": {
+          "score": 4.4,
+          "star_rating": 4,
+          "percentile": 78,
+          "reporting_year": 2025,
+          "status": "available",
+          "indicators": [
+            { "name": "Patient Safety", "value": 4.5, "benchmark": 4.2, "target": 4.5, "year": 2025, "status": "at_target" },
+            { "name": "Clinical Effectiveness", "value": 4.3, "benchmark": 4.0, "target": 4.3, "year": 2025, "status": "at_target" },
+            { "name": "Patient Centeredness", "value": 4.4, "benchmark": 4.1, "target": 4.4, "year": 2025, "status": "at_target" }
+          ]
+        },
+        "clisqi": {
+          "score": 4.1,
+          "star_rating": 4,
+          "reporting_year": 2025,
+          "status": "available",
+          "indicators": [
+            { "name": "Surgical Site Infection Rate", "value": 1.8, "benchmark": 2.0, "target": 1.5, "unit": "%", "year": 2025, "status": "below_target" },
+            { "name": "Unplanned Readmission Rate", "value": 4.2, "benchmark": 5.0, "target": 4.0, "unit": "%", "year": 2025, "status": "below_target" }
+          ]
+        },
+        "cluster": {
+          "score": 4.2,
+          "star_rating": 4,
+          "reporting_year": 2025,
+          "status": "available",
+          "indicators": [
+            { "name": "Cluster Integration Score", "value": 4.3, "benchmark": 4.0, "year": 2025 },
+            { "name": "Resource Sharing Index", "value": 4.1, "benchmark": 3.8, "year": 2025 }
+          ]
+        },
+        "mypsq": {
+          "score": 4.2,
+          "star_rating": 4,
+          "overall_satisfaction_pct": 84,
+          "survey_period": "2025",
+          "response_count": 620,
+          "reporting_year": 2025,
+          "status": "available",
+          "trend": [
+            { "year": 2022, "score": 3.9, "satisfaction_pct": 78 },
+            { "year": 2023, "score": 4.0, "satisfaction_pct": 80 },
+            { "year": 2024, "score": 4.1, "satisfaction_pct": 82 },
+            { "year": 2025, "score": 4.2, "satisfaction_pct": 84 }
+          ],
+          "indicators": [
+            { "name": "Staff Communication", "value": 4.3, "benchmark": 4.2 },
+            { "name": "Cleanliness", "value": 4.2, "benchmark": 4.0 },
+            { "name": "Wait Time", "value": 3.9, "benchmark": 3.9 },
+            { "name": "Overall Experience", "value": 4.2, "benchmark": 4.1 }
+          ]
+        },
+        "casemix": {
+          "score": 4.4,
+          "star_rating": 4.5,
+          "case_mix_index": 1.62,
+          "reporting_year": 2025,
+          "status": "available",
+          "indicators": [
+            { "name": "Case Mix Index", "value": 1.62, "benchmark": 1.50 },
+            { "name": "Severity of Illness", "value": 3.0, "benchmark": 2.8 }
+          ]
+        }
+      }
+    },
+    {
+      "hospital_id": "H003",
+      "hospital_name": "Hospital Shah Alam",
+      "official_name": "Hospital Shah Alam",
+      "state": "Selangor",
+      "district": "Petaling",
+      "town": "Shah Alam",
+      "address": "Persiaran Kayangan, Seksyen 7, 40000 Shah Alam, Selangor",
+      "postcode": "40000",
+      "latitude": 3.0738,
+      "longitude": 101.5183,
+      "phone": "03-55444000",
+      "website": null,
+      "hospital_type": "Secondary",
+      "hospital_category": "General",
+      "specialist_status": true,
+      "cluster_name": "Selangor Central Cluster",
+      "cluster_role": "Lead",
+      "lead_hospital": "Hospital Shah Alam",
+      "services": ["Emergency", "Surgery", "Obstetrics", "Paediatrics"],
+      "bed_count": 850,
+      "data_year": 2025,
+      "last_updated": "2025-01-01",
+      "quality": {
+        "overall_score": null,
+        "overall_star_rating": null,
+        "hpia": {
+          "score": 4.1,
+          "star_rating": 4,
+          "percentile": 65,
+          "reporting_year": 2025,
+          "status": "available",
+          "indicators": [
+            { "name": "Patient Safety", "value": 4.2, "benchmark": 4.2, "target": 4.5, "year": 2025, "status": "below_target" },
+            { "name": "Clinical Effectiveness", "value": 4.0, "benchmark": 4.0, "target": 4.3, "year": 2025, "status": "below_target" },
+            { "name": "Patient Centeredness", "value": 4.1, "benchmark": 4.1, "target": 4.4, "year": 2025, "status": "below_target" }
+          ]
+        },
+        "clisqi": {
+          "score": null,
+          "star_rating": null,
+          "reporting_year": 2025,
+          "status": "not_available"
+        },
+        "cluster": {
+          "score": 4.0,
+          "star_rating": 4,
+          "reporting_year": 2025,
+          "status": "available",
+          "indicators": [
+            { "name": "Cluster Integration Score", "value": 4.0, "benchmark": 4.0, "year": 2025 },
+            { "name": "Resource Sharing Index", "value": 4.0, "benchmark": 3.8, "year": 2025 }
+          ]
+        },
+        "mypsq": {
+          "score": null,
+          "star_rating": null,
+          "overall_satisfaction_pct": null,
+          "survey_period": null,
+          "response_count": null,
+          "reporting_year": 2025,
+          "status": "pending"
+        },
+        "casemix": {
+          "score": null,
+          "star_rating": null,
+          "case_mix_index": null,
+          "reporting_year": 2025,
+          "status": "not_applicable"
+        }
+      }
+    }
+  ]
+}
