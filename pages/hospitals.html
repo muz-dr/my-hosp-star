@@ -1,0 +1,930 @@
+<!DOCTYPE html>
+<html lang="en-MY">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Find Hospitals — Hospital Compare Malaysia</title>
+  <meta name="description" content="Search and filter KKM government hospitals in Malaysia by state, quality rating, patient satisfaction and more." />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="stylesheet" href="../assets/css/main.css" />
+
+  <!-- Leaflet Map -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css" />
+
+  <style>
+    /* ── Page layout ── */
+    .search-page-header {
+      background: var(--white);
+      border-bottom: 1px solid var(--grey-200);
+      padding: var(--space-5) 0;
+    }
+    .search-bar-row {
+      display: flex; gap: var(--space-3); align-items: center; flex-wrap: wrap;
+    }
+    .search-input-main {
+      flex: 1; min-width: 220px;
+      display: flex; align-items: center;
+      border: 1.5px solid var(--grey-300);
+      border-radius: var(--radius-lg);
+      padding: 0 var(--space-4);
+      background: var(--white);
+      transition: border-color var(--transition-fast);
+    }
+    .search-input-main:focus-within { border-color: var(--color-primary); }
+    .search-input-main input {
+      flex: 1; border: none; outline: none; padding: var(--space-3) var(--space-2);
+      font-size: var(--text-base); font-family: var(--font-body);
+      color: var(--grey-900); background: transparent;
+    }
+    .search-input-main input::placeholder { color: var(--grey-400); }
+
+    /* ── Three-column layout ── */
+    .results-layout {
+      display: grid;
+      grid-template-columns: var(--sidebar-width) 1fr 420px;
+      gap: var(--space-5);
+      align-items: start;
+      padding: var(--space-6) 0;
+    }
+
+    /* ── Filter sidebar ── */
+    .filter-sidebar { position: sticky; top: 80px; }
+    .filter-header {
+      display: flex; justify-content: space-between; align-items: center;
+      margin-bottom: var(--space-4);
+    }
+    .filter-title {
+      font-family: var(--font-display); font-size: var(--text-base);
+      font-weight: 700; color: var(--grey-900);
+    }
+    .filter-section { margin-bottom: var(--space-5); }
+    .filter-section-title {
+      font-size: var(--text-xs); font-weight: 700; text-transform: uppercase;
+      letter-spacing: 0.06em; color: var(--grey-500);
+      padding-bottom: var(--space-2); margin-bottom: var(--space-3);
+      border-bottom: 1px solid var(--grey-100);
+    }
+    .filter-check {
+      display: flex; align-items: center; gap: var(--space-2);
+      padding: var(--space-1) 0; cursor: pointer;
+    }
+    .filter-check input[type="checkbox"] {
+      accent-color: var(--color-primary); cursor: pointer;
+      width: 15px; height: 15px; flex-shrink: 0;
+    }
+    .filter-check label {
+      font-size: var(--text-sm); color: var(--grey-700);
+      cursor: pointer; flex: 1; line-height: 1.4;
+    }
+    .filter-check .count {
+      font-size: var(--text-xs); color: var(--grey-400);
+    }
+    .rating-filter { display: flex; flex-direction: column; gap: var(--space-2); }
+    .rating-option {
+      display: flex; align-items: center; gap: var(--space-2);
+      cursor: pointer; padding: var(--space-1) 0;
+    }
+    .rating-option input { accent-color: var(--color-primary); cursor: pointer; }
+    .rating-option label { display: flex; align-items: center; gap: var(--space-2); cursor: pointer; }
+
+    /* ── Results column ── */
+    .results-col {}
+    .sort-results-bar {
+      display: flex; align-items: center; gap: var(--space-3);
+      margin-bottom: var(--space-4); flex-wrap: wrap;
+    }
+    .results-count-text {
+      font-size: var(--text-sm); color: var(--grey-500); flex: 1;
+    }
+    .results-count-text strong { color: var(--grey-900); }
+    .sort-label { font-size: var(--text-sm); color: var(--grey-500); white-space: nowrap; }
+    .sort-sel {
+      border: 1px solid var(--grey-300); border-radius: var(--radius-md);
+      padding: var(--space-2) var(--space-3);
+      font-size: var(--text-sm); font-family: var(--font-body);
+      color: var(--grey-800); background: var(--white); cursor: pointer;
+    }
+    .view-toggle { display: flex; gap: var(--space-1); }
+    .view-btn {
+      width: 32px; height: 32px; border-radius: var(--radius-md);
+      border: 1px solid var(--grey-300); background: var(--white);
+      display: flex; align-items: center; justify-content: center;
+      cursor: pointer; color: var(--grey-500);
+      transition: all var(--transition-fast);
+    }
+    .view-btn.active { background: var(--color-primary); color: white; border-color: var(--color-primary); }
+
+    .hospital-list { display: flex; flex-direction: column; gap: var(--space-4); }
+    .hospital-list.grid-view {
+      display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    }
+
+    /* Load more */
+    .load-more-wrap { text-align: center; margin-top: var(--space-6); }
+
+    /* ── Map column ── */
+    .map-col {}
+    .map-sticky { position: sticky; top: 80px; }
+    .map-card {
+      background: var(--white);
+      border: 1px solid var(--grey-200);
+      border-radius: var(--radius-xl); overflow: hidden;
+    }
+    .map-card-header {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: var(--space-3) var(--space-4);
+      border-bottom: 1px solid var(--grey-100);
+    }
+    .map-card-title { font-size: var(--text-sm); font-weight: 600; color: var(--grey-700); }
+    #hospitals-map { height: 480px; }
+    .map-toggle-btn {
+      display: none; /* shown on mobile */
+      width: 100%; padding: var(--space-3);
+      background: var(--white); border: 1px solid var(--grey-200);
+      border-radius: var(--radius-lg); font-size: var(--text-sm); font-weight: 600;
+      color: var(--grey-700); cursor: pointer; margin-bottom: var(--space-4);
+      align-items: center; justify-content: center; gap: var(--space-2);
+    }
+
+    /* Active filter chips */
+    .active-filters {
+      display: flex; gap: var(--space-2); flex-wrap: wrap;
+      margin-bottom: var(--space-4);
+    }
+    .filter-chip {
+      display: inline-flex; align-items: center; gap: var(--space-1);
+      padding: var(--space-1) var(--space-3);
+      background: var(--blue-50); color: var(--blue-700);
+      border: 1px solid var(--blue-100);
+      border-radius: 100px; font-size: var(--text-xs); font-weight: 600;
+    }
+    .filter-chip-remove {
+      background: none; border: none; cursor: pointer;
+      color: var(--blue-400); padding: 0; line-height: 1;
+      font-size: 1.1em;
+    }
+    .filter-chip-remove:hover { color: var(--color-danger); }
+
+    /* Leaflet popup override */
+    .leaflet-popup-content-wrapper {
+      border-radius: var(--radius-lg) !important;
+      box-shadow: var(--shadow-xl) !important;
+    }
+    .map-popup { min-width: 180px; }
+    .map-popup-name {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 700; font-size: 13px; margin-bottom: 4px;
+      color: var(--grey-900);
+    }
+    .map-popup-loc { font-size: 12px; color: var(--grey-500); margin-bottom: 6px; }
+    .map-popup-rating { margin-bottom: 8px; }
+    .map-popup-link {
+      display: inline-block; padding: 4px 12px;
+      background: var(--color-primary); color: white;
+      border-radius: 6px; font-size: 12px; font-weight: 600;
+      text-decoration: none;
+    }
+
+    /* ── Responsive ── */
+    @media (max-width: 1100px) {
+      .results-layout { grid-template-columns: 240px 1fr; }
+      .map-col { display: none; }
+      .map-toggle-btn { display: flex; }
+      .map-col.mobile-open { display: block; grid-column: 1 / -1; }
+    }
+    @media (max-width: 700px) {
+      .results-layout { grid-template-columns: 1fr; }
+      .filter-sidebar {
+        position: static;
+        display: none;
+      }
+      .filter-sidebar.mobile-open { display: block; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ── HEADER ── -->
+  <header class="site-header" role="banner">
+    <div class="container header-inner">
+      <a href="../index.html" class="site-logo">
+        <div class="logo-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5">
+            <path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/>
+            <polyline points="9 22 9 12 15 12 15 22"/>
+          </svg>
+        </div>
+        <div class="logo-text">
+          <span class="logo-title">Hospital Compare Malaysia</span>
+          <span class="logo-sub">Kementerian Kesihatan Malaysia</span>
+        </div>
+      </a>
+      <nav class="site-nav">
+        <a href="../index.html" class="nav-link">Home</a>
+        <a href="hospitals.html" class="nav-link active" aria-current="page">Find Hospitals</a>
+        <a href="compare.html" class="nav-link">Compare</a>
+        <a href="methodology.html" class="nav-link">Methodology</a>
+        <a href="about-data.html" class="nav-link">About Data</a>
+      </nav>
+      <button class="mobile-menu-btn" aria-label="Open navigation">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/>
+        </svg>
+      </button>
+    </div>
+  </header>
+
+  <!-- ── SEARCH BAR ── -->
+  <div class="search-page-header">
+    <div class="container">
+      <div class="search-bar-row">
+        <div class="search-input-main">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="var(--grey-400)" stroke-width="2" aria-hidden="true">
+            <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+          </svg>
+          <input type="search" id="main-search" placeholder="Hospital name, state, district, postcode…"
+                 aria-label="Search hospitals" autocomplete="off" />
+        </div>
+        <button class="btn btn-primary" id="search-btn">Search</button>
+        <button class="btn btn-secondary" id="location-btn-results" title="Find hospitals near me">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/>
+          </svg>
+          Near Me
+        </button>
+        <!-- Mobile filter toggle -->
+        <button class="btn btn-secondary" id="mobile-filter-btn" style="display:none" aria-expanded="false">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="20" y2="12"/><line x1="12" y1="18" x2="20" y2="18"/>
+          </svg>
+          Filters <span id="filter-badge" hidden class="filter-active-count">0</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <main id="main-content">
+    <div class="container">
+
+      <!-- Mobile map toggle -->
+      <button class="map-toggle-btn" id="map-toggle-btn" aria-expanded="false">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/>
+        </svg>
+        Show / Hide Map
+      </button>
+
+      <div class="results-layout">
+
+        <!-- ══ FILTER SIDEBAR ══ -->
+        <aside class="filter-sidebar" id="filter-sidebar" aria-label="Filter hospitals">
+          <div class="filter-panel">
+            <div class="filter-header">
+              <span class="filter-title">Filters</span>
+              <button class="btn btn-ghost btn-sm" id="clear-filters-btn">Clear all</button>
+            </div>
+
+            <!-- State -->
+            <div class="filter-section" id="filter-state">
+              <div class="filter-section-title">State</div>
+              <div id="state-filters" role="group" aria-label="Filter by state"></div>
+            </div>
+
+            <!-- Hospital Type -->
+            <div class="filter-section" id="filter-type">
+              <div class="filter-section-title">Hospital Type</div>
+              <div id="type-filters" role="group" aria-label="Filter by hospital type"></div>
+            </div>
+
+            <!-- Specialist -->
+            <div class="filter-section">
+              <div class="filter-section-title">Specialist Status</div>
+              <div role="group" aria-label="Filter by specialist status">
+                <label class="filter-check">
+                  <input type="checkbox" id="filter-specialist" />
+                  <span>Specialist Hospital</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Cluster -->
+            <div class="filter-section" id="filter-cluster">
+              <div class="filter-section-title">Cluster</div>
+              <div id="cluster-filters" role="group" aria-label="Filter by cluster"></div>
+            </div>
+
+            <!-- Overall Rating -->
+            <div class="filter-section">
+              <div class="filter-section-title">Overall Rating</div>
+              <div class="rating-filter" role="group" aria-label="Filter by minimum rating">
+                <label class="rating-option">
+                  <input type="radio" name="rating-filter" value="" checked />
+                  <span>Any rating</span>
+                </label>
+                <label class="rating-option">
+                  <input type="radio" name="rating-filter" value="4.5" />
+                  <span>★★★★★ 4.5+</span>
+                </label>
+                <label class="rating-option">
+                  <input type="radio" name="rating-filter" value="4" />
+                  <span>★★★★☆ 4.0+</span>
+                </label>
+                <label class="rating-option">
+                  <input type="radio" name="rating-filter" value="3" />
+                  <span>★★★☆☆ 3.0+</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Data Year -->
+            <div class="filter-section">
+              <div class="filter-section-title">Data Availability</div>
+              <label class="filter-check">
+                <input type="checkbox" id="filter-has-rating" />
+                <span>Has overall rating</span>
+              </label>
+              <label class="filter-check">
+                <input type="checkbox" id="filter-has-mypsq" />
+                <span>Has patient satisfaction</span>
+              </label>
+              <label class="filter-check">
+                <input type="checkbox" id="filter-has-hpia" />
+                <span>Has HPIA score</span>
+              </label>
+            </div>
+
+          </div>
+        </aside>
+
+        <!-- ══ RESULTS ══ -->
+        <section class="results-col" aria-label="Hospital results">
+
+          <!-- Active filter chips -->
+          <div class="active-filters" id="active-filters" role="list" aria-label="Active filters"></div>
+
+          <!-- Sort bar -->
+          <div class="sort-results-bar">
+            <span class="results-count-text" id="results-count" aria-live="polite" aria-atomic="true">
+              Loading hospitals…
+            </span>
+            <label class="sort-label" for="sort-select">Sort by:</label>
+            <select class="sort-sel" id="sort-select" aria-label="Sort results">
+              <option value="name_az">Name A–Z</option>
+              <option value="rating_desc">Highest overall rating</option>
+              <option value="satisfaction_desc">Highest patient satisfaction</option>
+              <option value="hpia_desc">Highest HPIA</option>
+              <option value="clisqi_desc">Highest CliSQI</option>
+              <option value="cluster_desc">Highest Cluster score</option>
+              <option value="casemix_desc">Highest Casemix</option>
+              <option value="closest" id="sort-closest" disabled>Closest (enable location)</option>
+            </select>
+            <div class="view-toggle" aria-label="Switch view">
+              <button class="view-btn active" id="list-view-btn" title="List view" aria-pressed="true">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/>
+                  <line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/>
+                </svg>
+              </button>
+              <button class="view-btn" id="grid-view-btn" title="Grid view" aria-pressed="false">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/>
+                  <rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <!-- Hospital cards -->
+          <div class="hospital-list" id="hospital-list" role="list" aria-label="Hospital results" aria-live="polite"></div>
+
+          <!-- Load more -->
+          <div class="load-more-wrap" id="load-more-wrap" hidden>
+            <button class="btn btn-secondary btn-lg" id="load-more-btn">Load more hospitals</button>
+          </div>
+
+          <!-- Empty state -->
+          <div class="empty-state" id="empty-state" hidden>
+            <div class="empty-state-icon">🏥</div>
+            <h3>No hospitals found</h3>
+            <p>Try adjusting your search or filters.</p>
+            <button class="btn btn-primary" id="empty-clear-btn">Clear all filters</button>
+          </div>
+
+        </section>
+
+        <!-- ══ MAP ══ -->
+        <aside class="map-col" id="map-col" aria-label="Hospital map">
+          <div class="map-sticky">
+            <div class="map-card">
+              <div class="map-card-header">
+                <span class="map-card-title">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="display:inline;vertical-align:middle;margin-right:4px">
+                    <polygon points="3 6 9 3 15 6 21 3 21 18 15 21 9 18 3 21"/>
+                  </svg>
+                  Hospital Map
+                </span>
+                <span id="map-count" style="font-size:var(--text-xs);color:var(--grey-400)"></span>
+              </div>
+              <div id="hospitals-map" aria-label="Map showing hospital locations"></div>
+            </div>
+          </div>
+        </aside>
+
+      </div>
+    </div>
+  </main>
+
+  <!-- Compare Tray -->
+  <div class="compare-tray" id="compare-tray" role="region" aria-label="Hospital comparison tray" aria-live="polite"></div>
+
+  <!-- Footer (compact) -->
+  <footer class="site-footer" style="margin-top:var(--space-12)">
+    <div class="container">
+      <div class="footer-bottom" style="border-top:none;padding-top:0">
+        <span>© <script>document.write(new Date().getFullYear())</script> Hospital Compare Malaysia</span>
+        <span>Data: Ministry of Health Malaysia (KKM)</span>
+        <a href="about-data.html" style="color:rgba(255,255,255,0.5)">About the data</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+  <script src="https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js"></script>
+  <script src="../assets/js/sheets.js"></script>
+  <script src="../assets/js/config.js"></script>
+  <script src="../assets/js/app.js"></script>
+  <script>
+  /* ══════════════════════════════════════════
+     HOSPITALS PAGE CONTROLLER
+  ══════════════════════════════════════════ */
+
+  // ── State ──
+  let allHospitals = [];
+  let filteredHospitals = [];
+  let displayedCount = 0;
+  const PAGE_SIZE = 20;
+  let map = null;
+  let markerGroup = null;
+  let markers = {};     // hospital_id → marker
+  let activeFilters = {
+    states: [], types: [], clusters: [],
+    specialist: null, minRating: null,
+    hasRating: false, hasMypsq: false, hasHpia: false,
+    query: ''
+  };
+
+  // ── Init ──
+  (async function init() {
+    // Mobile UI
+    setupMobileControls();
+
+    // Load data
+    try {
+      await DataStore.load('../data/hospitals.json');
+    } catch {
+      document.getElementById('hospital-list').innerHTML = `
+        <div class="empty-state">
+          <div class="empty-state-icon">⚠️</div>
+          <h3>Could not load hospital data</h3>
+          <p>Make sure <code>data/hospitals.json</code> is in your repository.</p>
+        </div>`;
+      return;
+    }
+
+    allHospitals = DataStore.getAll();
+
+    // Read URL params (shareable links)
+    const params = Utils.getUrlParams();
+    if (params.q)      { document.getElementById('main-search').value = params.q; activeFilters.query = params.q; }
+    if (params.state)  activeFilters.states = [params.state];
+    if (params.sort)   document.getElementById('sort-select').value = params.sort;
+
+    // Handle location-based search from homepage
+    if (params.lat && params.lng) {
+      const lat = parseFloat(params.lat), lng = parseFloat(params.lng);
+      GeoHelper.userLat = lat; GeoHelper.userLng = lng;
+      allHospitals = Utils.addDistances(allHospitals, lat, lng);
+      document.getElementById('sort-closest').disabled = false;
+      if (params.sort === 'closest') document.getElementById('sort-select').value = 'closest';
+    }
+
+    // Build dynamic filters
+    buildFilters();
+
+    // Restore state filter from URL
+    if (params.state) {
+      const cb = document.querySelector(`#state-filters input[value="${params.state}"]`);
+      if (cb) cb.checked = true;
+    }
+
+    // Init map
+    initMap();
+
+    // First render
+    applyAndRender();
+
+    // Bind events
+    document.getElementById('main-search').addEventListener('input', debounce(() => {
+      activeFilters.query = document.getElementById('main-search').value.trim();
+      applyAndRender(true);
+      updateUrl();
+    }, 300));
+    document.getElementById('search-btn').addEventListener('click', () => {
+      activeFilters.query = document.getElementById('main-search').value.trim();
+      applyAndRender(true);
+      updateUrl();
+    });
+    document.getElementById('sort-select').addEventListener('change', () => {
+      applyAndRender(false);
+      updateUrl();
+    });
+    document.getElementById('clear-filters-btn').addEventListener('click', clearAllFilters);
+    document.getElementById('empty-clear-btn').addEventListener('click', clearAllFilters);
+    document.getElementById('load-more-btn').addEventListener('click', loadMore);
+    document.getElementById('location-btn-results').addEventListener('click', useLocation);
+
+    // View toggle
+    document.getElementById('list-view-btn').addEventListener('click', () => setView('list'));
+    document.getElementById('grid-view-btn').addEventListener('click', () => setView('grid'));
+
+  })();
+
+  // ── Build dynamic filter lists from data ──
+  function buildFilters() {
+    const states   = DataStore.getStates();
+    const types    = DataStore.getTypes();
+    const clusters = DataStore.getClusters();
+
+    const stateCount = {};
+    const typeCount  = {};
+    const clusterCount = {};
+    allHospitals.forEach(h => {
+      stateCount[h.state]       = (stateCount[h.state] || 0) + 1;
+      typeCount[h.hospital_type] = (typeCount[h.hospital_type] || 0) + 1;
+      if (h.cluster_name) clusterCount[h.cluster_name] = (clusterCount[h.cluster_name] || 0) + 1;
+    });
+
+    renderCheckboxGroup('state-filters',   states,   stateCount,   'filter-state',   updateStateFilter);
+    renderCheckboxGroup('type-filters',    types,    typeCount,    'filter-type',    updateTypeFilter);
+    renderCheckboxGroup('cluster-filters', clusters, clusterCount, 'filter-cluster', updateClusterFilter);
+
+    document.getElementById('filter-specialist').addEventListener('change', e => {
+      activeFilters.specialist = e.target.checked ? true : null;
+      applyAndRender(true);
+    });
+
+    ['filter-has-rating','filter-has-mypsq','filter-has-hpia'].forEach(id => {
+      document.getElementById(id).addEventListener('change', () => {
+        activeFilters.hasRating = document.getElementById('filter-has-rating').checked;
+        activeFilters.hasMypsq  = document.getElementById('filter-has-mypsq').checked;
+        activeFilters.hasHpia   = document.getElementById('filter-has-hpia').checked;
+        applyAndRender(true);
+      });
+    });
+
+    document.querySelectorAll('input[name="rating-filter"]').forEach(r => {
+      r.addEventListener('change', e => {
+        activeFilters.minRating = e.target.value ? parseFloat(e.target.value) : null;
+        applyAndRender(true);
+      });
+    });
+  }
+
+  function renderCheckboxGroup(containerId, items, counts, sectionId, handler) {
+    const el = document.getElementById(containerId);
+    if (!el) return;
+    // Show top 8, hide rest
+    const show = 8;
+    const html = items.slice(0, show).map(item => `
+      <label class="filter-check">
+        <input type="checkbox" value="${item}" />
+        <span>${item}</span>
+        <span class="count">${counts[item] || 0}</span>
+      </label>`).join('');
+    const moreHtml = items.length > show
+      ? `<button class="btn btn-ghost btn-sm" style="margin-top:4px" onclick="expandFilter('${containerId}', ${JSON.stringify(items)}, ${JSON.stringify(counts)}, '${sectionId}')">
+           +${items.length - show} more
+         </button>` : '';
+    el.innerHTML = html + moreHtml;
+    el.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+      cb.addEventListener('change', handler);
+    });
+  }
+
+  window.expandFilter = function(containerId, items, counts, sectionId) {
+    const el = document.getElementById(containerId);
+    const handler = containerId === 'state-filters'   ? updateStateFilter
+                  : containerId === 'type-filters'    ? updateTypeFilter
+                  : updateClusterFilter;
+    el.innerHTML = items.map(item => `
+      <label class="filter-check">
+        <input type="checkbox" value="${item}" ${activeFilters.states?.includes(item) || activeFilters.types?.includes(item) || activeFilters.clusters?.includes(item) ? 'checked' : ''} />
+        <span>${item}</span>
+        <span class="count">${counts[item] || 0}</span>
+      </label>`).join('');
+    el.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+      cb.addEventListener('change', handler);
+    });
+  };
+
+  function updateStateFilter() {
+    activeFilters.states = [...document.querySelectorAll('#state-filters input:checked')].map(i => i.value);
+    applyAndRender(true); updateUrl();
+  }
+  function updateTypeFilter() {
+    activeFilters.types = [...document.querySelectorAll('#type-filters input:checked')].map(i => i.value);
+    applyAndRender(true);
+  }
+  function updateClusterFilter() {
+    activeFilters.clusters = [...document.querySelectorAll('#cluster-filters input:checked')].map(i => i.value);
+    applyAndRender(true);
+  }
+
+  // ── Apply filters + sort + render ──
+  function applyAndRender(resetPage = true) {
+    if (resetPage) displayedCount = 0;
+
+    let hospitals = [...allHospitals];
+
+    // Text search
+    if (activeFilters.query) {
+      hospitals = Utils.searchHospitals(hospitals, activeFilters.query);
+    }
+
+    // Filters
+    if (activeFilters.states.length)   hospitals = hospitals.filter(h => activeFilters.states.includes(h.state));
+    if (activeFilters.types.length)    hospitals = hospitals.filter(h => activeFilters.types.includes(h.hospital_type));
+    if (activeFilters.clusters.length) hospitals = hospitals.filter(h => activeFilters.clusters.includes(h.cluster_name));
+    if (activeFilters.specialist)      hospitals = hospitals.filter(h => h.specialist_status === true);
+    if (activeFilters.minRating)       hospitals = hospitals.filter(h => (h.quality?.overall_score ?? 0) >= activeFilters.minRating);
+    if (activeFilters.hasRating)       hospitals = hospitals.filter(h => h.quality?.overall_score != null);
+    if (activeFilters.hasMypsq)        hospitals = hospitals.filter(h => h.quality?.mypsq?.status === 'available');
+    if (activeFilters.hasHpia)         hospitals = hospitals.filter(h => h.quality?.hpia?.status === 'available');
+
+    // Sort
+    const sortKey = document.getElementById('sort-select').value;
+    hospitals = Utils.sortHospitals(hospitals, sortKey, GeoHelper.userLat, GeoHelper.userLng);
+
+    filteredHospitals = hospitals;
+    renderResults(resetPage);
+    updateActiveFilterChips();
+    updateMap();
+  }
+
+  // ── Render cards ──
+  function renderResults(resetPage) {
+    const list = document.getElementById('hospital-list');
+    const emptyState = document.getElementById('empty-state');
+    const loadMoreWrap = document.getElementById('load-more-wrap');
+    const countEl = document.getElementById('results-count');
+
+    if (filteredHospitals.length === 0) {
+      list.innerHTML = '';
+      emptyState.hidden = false;
+      loadMoreWrap.hidden = true;
+      countEl.innerHTML = 'No hospitals found';
+      return;
+    }
+
+    emptyState.hidden = true;
+
+    if (resetPage) {
+      displayedCount = Math.min(PAGE_SIZE, filteredHospitals.length);
+      list.innerHTML = filteredHospitals.slice(0, displayedCount)
+        .map(h => HospitalCard.render(h, { showDistance: GeoHelper.userLat != null }))
+        .join('');
+    } else {
+      // Keep existing, just update count display
+    }
+
+    countEl.innerHTML = `Showing <strong>${displayedCount}</strong> of <strong>${filteredHospitals.length}</strong> hospitals`;
+    loadMoreWrap.hidden = displayedCount >= filteredHospitals.length;
+  }
+
+  function loadMore() {
+    const next = Math.min(displayedCount + PAGE_SIZE, filteredHospitals.length);
+    const list = document.getElementById('hospital-list');
+    const newCards = filteredHospitals.slice(displayedCount, next)
+      .map(h => HospitalCard.render(h, { showDistance: GeoHelper.userLat != null }))
+      .join('');
+    list.insertAdjacentHTML('beforeend', newCards);
+    displayedCount = next;
+
+    const countEl = document.getElementById('results-count');
+    countEl.innerHTML = `Showing <strong>${displayedCount}</strong> of <strong>${filteredHospitals.length}</strong> hospitals`;
+    document.getElementById('load-more-wrap').hidden = displayedCount >= filteredHospitals.length;
+  }
+
+  // ── Active filter chips ──
+  function updateActiveFilterChips() {
+    const container = document.getElementById('active-filters');
+    const chips = [];
+
+    if (activeFilters.query) chips.push({ label: `"${activeFilters.query}"`, clear: () => { activeFilters.query = ''; document.getElementById('main-search').value = ''; applyAndRender(true); }});
+    activeFilters.states.forEach(s => chips.push({ label: s, clear: () => { activeFilters.states = activeFilters.states.filter(x => x !== s); document.querySelector(`#state-filters input[value="${s}"]`).checked = false; applyAndRender(true); }}));
+    activeFilters.types.forEach(t  => chips.push({ label: t, clear: () => { activeFilters.types  = activeFilters.types.filter(x => x !== t); applyAndRender(true); }}));
+    activeFilters.clusters.forEach(c => chips.push({ label: c, clear: () => { activeFilters.clusters = activeFilters.clusters.filter(x => x !== c); applyAndRender(true); }}));
+    if (activeFilters.specialist) chips.push({ label: 'Specialist', clear: () => { activeFilters.specialist = null; document.getElementById('filter-specialist').checked = false; applyAndRender(true); }});
+    if (activeFilters.minRating)  chips.push({ label: `${activeFilters.minRating}+ stars`, clear: () => { activeFilters.minRating = null; document.querySelector('input[name="rating-filter"][value=""]').checked = true; applyAndRender(true); }});
+
+    // Filter badge count
+    const badge = document.getElementById('filter-badge');
+    badge.hidden = chips.length === 0;
+    badge.textContent = chips.length;
+
+    if (chips.length === 0) { container.innerHTML = ''; return; }
+    container.innerHTML = chips.map((c, i) => `
+      <div class="filter-chip" role="listitem">
+        ${c.label}
+        <button class="filter-chip-remove" onclick="clearChip(${i})" aria-label="Remove filter ${c.label}">×</button>
+      </div>`).join('');
+
+    // Store clear functions
+    window._chipClearFns = chips.map(c => c.clear);
+  }
+
+  window.clearChip = function(i) { window._chipClearFns[i](); };
+
+  function clearAllFilters() {
+    activeFilters = { states: [], types: [], clusters: [], specialist: null, minRating: null, hasRating: false, hasMypsq: false, hasHpia: false, query: '' };
+    document.getElementById('main-search').value = '';
+    document.querySelectorAll('.filter-check input, input[name="rating-filter"]').forEach(el => {
+      if (el.type === 'radio' && el.value === '') el.checked = true;
+      else if (el.type !== 'radio') el.checked = false;
+    });
+    applyAndRender(true);
+    updateUrl();
+  }
+
+  // ── Map ──
+  function initMap() {
+    map = L.map('hospitals-map', {
+      center: SITE_CONFIG.MAP_CENTER,
+      zoom: SITE_CONFIG.MAP_DEFAULT_ZOOM,
+      zoomControl: true,
+    });
+
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© <a href="https://openstreetmap.org">OpenStreetMap</a> contributors',
+      maxZoom: 18,
+    }).addTo(map);
+
+    markerGroup = L.markerClusterGroup({ maxClusterRadius: SITE_CONFIG.MAP_CLUSTER_RADIUS });
+    map.addLayer(markerGroup);
+  }
+
+  function updateMap() {
+    if (!map) return;
+    markerGroup.clearLayers();
+    markers = {};
+
+    const withCoords = filteredHospitals.filter(h => h.latitude && h.longitude);
+    document.getElementById('map-count').textContent = `${withCoords.length} hospitals`;
+
+    const blueIcon = L.divIcon({
+      html: `<div style="
+        width:28px;height:28px;border-radius:50% 50% 50% 0;
+        background:var(--color-primary);transform:rotate(-45deg);
+        border:2px solid white;box-shadow:0 2px 6px rgba(0,0,0,0.3);">
+      </div>`,
+      iconSize: [28, 28], iconAnchor: [14, 28], popupAnchor: [0, -30],
+      className: '',
+    });
+
+    withCoords.forEach(h => {
+      const q = h.quality || {};
+      const marker = L.marker([h.latitude, h.longitude], { icon: blueIcon });
+      const ratingHtml = q.overall_score != null
+        ? StarRating.render(q.overall_score, q.overall_star_rating, { size: 'sm', showScore: true })
+        : '<span style="font-size:12px;color:var(--grey-400)">Rating not available</span>';
+      const satisfactionHtml = q.mypsq?.overall_satisfaction_pct != null
+        ? `<div style="font-size:12px;color:var(--grey-600);margin-top:4px">
+             Patient satisfaction: <strong>${Utils.formatPct(q.mypsq.overall_satisfaction_pct)}</strong>
+           </div>` : '';
+
+      marker.bindPopup(`
+        <div class="map-popup">
+          <div class="map-popup-name">${h.hospital_name}</div>
+          <div class="map-popup-loc">${h.town || h.district || ''}, ${h.state}</div>
+          <div class="map-popup-rating">${ratingHtml}</div>
+          ${satisfactionHtml}
+          <a class="map-popup-link" href="hospital.html?id=${h.hospital_id}">View Hospital →</a>
+        </div>`, { maxWidth: 240 });
+
+      marker.on('click', () => highlightCard(h.hospital_id));
+      markers[h.hospital_id] = marker;
+      markerGroup.addLayer(marker);
+    });
+
+    if (withCoords.length > 0) {
+      try { map.fitBounds(markerGroup.getBounds(), { padding: [20, 20], maxZoom: 12 }); } catch(e) {}
+    }
+  }
+
+  function highlightCard(id) {
+    document.querySelectorAll('.hospital-card.highlighted').forEach(el => el.classList.remove('highlighted'));
+    const card = document.querySelector(`.hospital-card[data-id="${id}"]`);
+    if (card) {
+      card.classList.add('highlighted');
+      card.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+  }
+
+  // Highlight map marker when card is clicked
+  document.addEventListener('click', e => {
+    const card = e.target.closest('.hospital-card');
+    if (card) {
+      const id = card.dataset.id;
+      if (markers[id]) markers[id].openPopup();
+    }
+  });
+
+  // ── Location ──
+  async function useLocation() {
+    const btn = document.getElementById('location-btn-results');
+    btn.textContent = 'Finding…'; btn.disabled = true;
+    try {
+      const { lat, lng } = await GeoHelper.requestLocation();
+      allHospitals = Utils.addDistances(allHospitals, lat, lng);
+      document.getElementById('sort-closest').disabled = false;
+      document.getElementById('sort-select').value = 'closest';
+      applyAndRender(true);
+      Utils.toast('Showing hospitals nearest to you');
+
+      // Add "you are here" marker
+      L.marker([lat, lng], {
+        icon: L.divIcon({
+          html: `<div style="width:14px;height:14px;border-radius:50%;background:#16a34a;border:3px solid white;box-shadow:0 0 0 3px rgba(22,163,74,0.3)"></div>`,
+          iconSize: [14, 14], iconAnchor: [7, 7], className: ''
+        })
+      }).addTo(map).bindPopup('Your location');
+    } catch {
+      Utils.toast('Could not get your location. Check browser permissions.');
+    }
+    btn.textContent = 'Near Me'; btn.disabled = false;
+  }
+
+  // ── View toggle (list / grid) ──
+  function setView(mode) {
+    const list = document.getElementById('hospital-list');
+    const listBtn = document.getElementById('list-view-btn');
+    const gridBtn = document.getElementById('grid-view-btn');
+    if (mode === 'grid') {
+      list.classList.add('grid-view');
+      listBtn.classList.remove('active'); listBtn.setAttribute('aria-pressed','false');
+      gridBtn.classList.add('active');    gridBtn.setAttribute('aria-pressed','true');
+    } else {
+      list.classList.remove('grid-view');
+      gridBtn.classList.remove('active'); gridBtn.setAttribute('aria-pressed','false');
+      listBtn.classList.add('active');    listBtn.setAttribute('aria-pressed','true');
+    }
+  }
+
+  // ── URL state ──
+  function updateUrl() {
+    const params = {};
+    if (activeFilters.query)          params.q     = activeFilters.query;
+    if (activeFilters.states.length)  params.state = activeFilters.states[0];
+    const sort = document.getElementById('sort-select').value;
+    if (sort !== 'name_az') params.sort = sort;
+    Utils.setUrlParams(params, true);
+  }
+
+  // ── Mobile controls ──
+  function setupMobileControls() {
+    const filterBtn = document.getElementById('mobile-filter-btn');
+    const sidebar = document.getElementById('filter-sidebar');
+    const mapToggle = document.getElementById('map-toggle-btn');
+    const mapCol = document.getElementById('map-col');
+
+    if (window.innerWidth <= 700) {
+      filterBtn.style.display = 'flex';
+    }
+    window.addEventListener('resize', () => {
+      filterBtn.style.display = window.innerWidth <= 700 ? 'flex' : 'none';
+    });
+
+    filterBtn.addEventListener('click', () => {
+      const open = sidebar.classList.toggle('mobile-open');
+      filterBtn.setAttribute('aria-expanded', open);
+    });
+
+    mapToggle.addEventListener('click', () => {
+      const open = mapCol.classList.toggle('mobile-open');
+      mapToggle.setAttribute('aria-expanded', open);
+      if (open && map) setTimeout(() => map.invalidateSize(), 300);
+    });
+  }
+
+  // ── Debounce ──
+  function debounce(fn, ms) {
+    let t; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); };
+  }
+  </script>
+</body>
+</html>
