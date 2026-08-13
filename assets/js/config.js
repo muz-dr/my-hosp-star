@@ -24,7 +24,7 @@ const SITE_CONFIG = {
   //  Find it in your Google Sheet URL:
   //  https://docs.google.com/spreadsheets/d/  SHEET_ID  /edit
   //
-  GOOGLE_SHEET_ID: 'YOUR_SHEET_ID_HERE',
+  GOOGLE_SHEET_ID: '1SftF7z--q62-Ipfq6k9NIu-2Wed9c6EM92NCHL5fX94',
 
   //  Names of the tabs in your Google Sheet.
   //  The first tab is required. The others are optional.
