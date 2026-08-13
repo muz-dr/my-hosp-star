@@ -83,7 +83,7 @@
   --space-20: 5rem;
 
   /* Layout */
-  --container-max: 1280px;
+  --container-max: 1536px;
   --sidebar-width: 280px;
   --radius-sm:  0.375rem;
   --radius-md:  0.5rem;
@@ -222,7 +222,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 .hero-content {
   position: relative; z-index: 1;
-  max-width: 760px;
+  max-width: 1000px;
 }
 .hero-eyebrow {
   display: inline-flex; align-items: center; gap: var(--space-2);
