@@ -304,7 +304,7 @@
   let targetSlot  = null;
 
   (async function init() {
-    await DataStore.load('../data/hospitals.json');
+    await DataStore.load();
 
     // Restore from URL: /compare.html?ids=H001,H002
     const params = new URLSearchParams(window.location.search);
