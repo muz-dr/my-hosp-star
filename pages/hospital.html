@@ -635,7 +635,7 @@
 
     // Load data
     try {
-      await DataStore.load('../data/hospitals.json');
+      await DataStore.load();
     } catch {
       showError(); return;
     }
