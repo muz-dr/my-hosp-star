@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Find Hospitals — Hospital Compare Malaysia</title>
+  <title>Find Hospitals — My-Hosp-Star</title>
   <meta name="description" content="Search and filter KKM government hospitals in Malaysia by state, quality rating, patient satisfaction and more." />
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -219,7 +219,7 @@
           </svg>
         </div>
         <div class="logo-text">
-          <span class="logo-title">Hospital Compare Malaysia</span>
+          <span class="logo-title">My-Hosp-Star</span>
           <span class="logo-sub">Kementerian Kesihatan Malaysia</span>
         </div>
       </a>
@@ -595,38 +595,57 @@
     });
   }
 
+  // ── Store filter data (avoids JSON-in-onclick breakage with special chars) ──
+  const _filterStore = {};
+
   function renderCheckboxGroup(containerId, items, counts, sectionId, handler) {
     const el = document.getElementById(containerId);
     if (!el) return;
-    // Show top 8, hide rest
+
+    // Save data so expandFilter can read it without passing through HTML
+    _filterStore[containerId] = { items, counts, handler };
+
     const show = 8;
-    const html = items.slice(0, show).map(item => `
+    const visible = items.slice(0, show);
+    const html = visible.map(item => `
       <label class="filter-check">
         <input type="checkbox" value="${item}" />
         <span>${item}</span>
         <span class="count">${counts[item] || 0}</span>
       </label>`).join('');
+
     const moreHtml = items.length > show
-      ? `<button class="btn btn-ghost btn-sm" style="margin-top:4px" onclick="expandFilter('${containerId}', ${JSON.stringify(items)}, ${JSON.stringify(counts)}, '${sectionId}')">
-           +${items.length - show} more
+      ? `<button class="btn btn-ghost btn-sm" style="margin-top:6px"
+               onclick="expandFilter('${containerId}')">
+           + ${items.length - show} more
          </button>` : '';
+
     el.innerHTML = html + moreHtml;
     el.querySelectorAll('input[type="checkbox"]').forEach(cb => {
       cb.addEventListener('change', handler);
     });
   }
 
-  window.expandFilter = function(containerId, items, counts, sectionId) {
+  window.expandFilter = function(containerId) {
+    const store = _filterStore[containerId];
+    if (!store) return;
+    const { items, counts, handler } = store;
     const el = document.getElementById(containerId);
-    const handler = containerId === 'state-filters'   ? updateStateFilter
-                  : containerId === 'type-filters'    ? updateTypeFilter
-                  : updateClusterFilter;
-    el.innerHTML = items.map(item => `
-      <label class="filter-check">
-        <input type="checkbox" value="${item}" ${activeFilters.states?.includes(item) || activeFilters.types?.includes(item) || activeFilters.clusters?.includes(item) ? 'checked' : ''} />
-        <span>${item}</span>
-        <span class="count">${counts[item] || 0}</span>
-      </label>`).join('');
+    if (!el) return;
+
+    el.innerHTML = items.map(item => {
+      const isChecked =
+        activeFilters.states.includes(item) ||
+        activeFilters.types.includes(item)  ||
+        activeFilters.clusters.includes(item);
+      return `
+        <label class="filter-check">
+          <input type="checkbox" value="${item}" ${isChecked ? 'checked' : ''} />
+          <span>${item}</span>
+          <span class="count">${counts[item] || 0}</span>
+        </label>`;
+    }).join('');
+
     el.querySelectorAll('input[type="checkbox"]').forEach(cb => {
       cb.addEventListener('change', handler);
     });
