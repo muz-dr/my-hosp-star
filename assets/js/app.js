@@ -375,6 +375,11 @@ const Utils = {
    HOSPITAL CARD RENDERER
    ============================================================ */
 const HospitalCard = {
+  // Returns 'pages/' when called from root index.html, '' when already inside /pages/
+  _prefix() {
+    return window.location.pathname.includes('/pages/') ? '' : 'pages/';
+  },
+
   render(hospital, opts = {}) {
     const { showDistance = true, showCompareBtn = true } = opts;
     const q = hospital.quality || {};
@@ -416,7 +421,7 @@ const HospitalCard = {
         
         <div class="hospital-card-header">
           <h3 class="hospital-card-name">
-            <a href="hospital.html?id=${hospital.hospital_id}">
+            <a href="${this._prefix()}hospital.html?id=${hospital.hospital_id}">
               ${hospital.hospital_name}
             </a>
           </h3>
@@ -453,7 +458,7 @@ const HospitalCard = {
         <div class="hospital-card-footer">
           ${distanceHtml}
           <div class="card-actions">
-            <a href="hospital.html?id=${hospital.hospital_id}" 
+            <a href="${this._prefix()}hospital.html?id=${hospital.hospital_id}" 
                class="btn btn-primary btn-sm">View Hospital</a>
             ${showCompareBtn ? `
             <button class="btn btn-compare btn-sm ${inCompare ? 'selected' : ''}"
@@ -525,7 +530,7 @@ const CompareTray = {
         <div class="compare-tray-hospitals">${slots.join('')}</div>
         <div style="display:flex;gap:var(--space-2)">
           <button class="btn btn-ghost btn-sm" onclick="clearCompare()">Clear all</button>
-          <a href="compare.html?ids=${list.join(',')}" class="btn btn-primary btn-sm">Compare Hospitals →</a>
+          <a href="${window.location.pathname.includes('/pages/') ? '' : 'pages/'}compare.html?ids=${list.join(',')}" class="btn btn-primary btn-sm">Compare Hospitals →</a>
         </div>
       </div>`;
   }
