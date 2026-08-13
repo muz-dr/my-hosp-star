@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>About the Data — Hospital Compare Malaysia</title>
+  <title>About the Data — My-Hosp-Star</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link rel="stylesheet" href="../assets/css/main.css" />
@@ -33,7 +33,7 @@
     <div class="container header-inner">
       <a href="../index.html" class="site-logo">
         <div class="logo-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
-        <div class="logo-text"><span class="logo-title">Hospital Compare Malaysia</span><span class="logo-sub">Kementerian Kesihatan Malaysia</span></div>
+        <div class="logo-text"><span class="logo-title">My-Hosp-Star</span><span class="logo-sub">Kementerian Kesihatan Malaysia</span></div>
       </a>
       <nav class="site-nav">
         <a href="../index.html" class="nav-link">Home</a>
@@ -63,7 +63,7 @@
           <p>The data includes HPIA (Hospital Performance Indicator Assessment), CliSQI, Cluster Performance, MyPSQ/PSQ-18 patient satisfaction, and Casemix indicators collected and published by KKM as part of its hospital performance monitoring programme.</p>
           <div class="info-box">
             📋 <strong>Official source:</strong> Kementerian Kesihatan Malaysia (KKM) Hospital Performance Data.<br>
-            This platform presents KKM data in a citizen-friendly format. It is not operated by KKM.
+            This platform presents KKM data in a UI/UX-friendly format.
           </div>
         </section>
 
@@ -114,37 +114,6 @@
         </section>
 
         <section class="about-section">
-          <h2>How to Update the Data</h2>
-          <p>The dataset is maintained via a Google Sheet. When new KKM data is published, update the Google Sheet and the website updates automatically.</p>
-          <div class="update-steps">
-            <div class="update-step">
-              <div class="update-step-content">
-                <div class="update-step-title">Update the Google Sheet</div>
-                <div class="update-step-desc">Add or update hospital rows with new indicator data. Use the approved status codes for missing values. Never use 0 for missing data.</div>
-              </div>
-            </div>
-            <div class="update-step">
-              <div class="update-step-content">
-                <div class="update-step-title">Verify the data</div>
-                <div class="update-step-desc">Check that all required fields are complete, coordinates are within Malaysia, and scores are within the 0–5 range.</div>
-              </div>
-            </div>
-            <div class="update-step">
-              <div class="update-step-content">
-                <div class="update-step-title">Export to JSON</div>
-                <div class="update-step-desc">If using direct Google Sheets fetch mode, the site updates automatically. If using the JSON file, replace <code>data/hospitals.json</code> with the new export.</div>
-              </div>
-            </div>
-            <div class="update-step">
-              <div class="update-step-content">
-                <div class="update-step-title">Commit to GitHub</div>
-                <div class="update-step-desc">Push the updated JSON file to the GitHub repository. GitHub Pages will deploy automatically within a few minutes.</div>
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <section class="about-section">
           <h2>Source Data vs Displayed Data</h2>
           <p>This platform distinguishes between:</p>
           <ul>
@@ -178,7 +147,7 @@
   <footer class="site-footer">
     <div class="container">
       <div class="footer-bottom" style="border-top:none;padding-top:0">
-        <span>© <script>document.write(new Date().getFullYear())</script> Hospital Compare Malaysia</span>
+        <span>© <script>document.write(new Date().getFullYear())</script> My-Hosp-Star</span>
         <span>Data: Ministry of Health Malaysia (KKM)</span>
       </div>
     </div>
