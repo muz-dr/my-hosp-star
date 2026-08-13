@@ -485,7 +485,7 @@
 
     // Load data
     try {
-      await DataStore.load('../data/hospitals.json');
+      await DataStore.load();
     } catch {
       document.getElementById('hospital-list').innerHTML = `
         <div class="empty-state">
