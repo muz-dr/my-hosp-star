@@ -653,10 +653,62 @@ function initMobileNav() {
 }
 
 /* ============================================================
+   LOGO & FAVICON
+   Auto-loads logo.png and favicon.png from the repo root.
+   Falls back to the existing SVG icon if the files aren't there.
+   ============================================================ */
+function initLogoAndFavicon() {
+  const inPages  = window.location.pathname.includes('/pages/');
+  const rootPath = inPages ? '../' : './';
+
+  // ── Favicon ─────────────────────────────────────────────
+  // Only inject if no favicon tag already exists in the HTML
+  if (!document.querySelector('link[rel~="icon"]')) {
+    const link = Object.assign(document.createElement('link'), {
+      rel:  'icon',
+      type: 'image/png',
+      href: rootPath + 'favicon.png',
+    });
+    document.head.appendChild(link);
+  }
+
+  // ── Logo image ──────────────────────────────────────────
+  // Tries to load logo.png from root. If it exists, replaces
+  // the blue square icon. If it 404s, leaves the SVG as-is.
+  const logoIconEl = document.querySelector('.logo-icon');
+  if (!logoIconEl) return;
+
+  const img = document.createElement('img');
+  img.src   = rootPath + 'logo.png';
+  img.alt   = 'Hospital Compare Malaysia';
+  img.style.cssText = [
+    'height: 38px',
+    'width: auto',
+    'max-width: 180px',
+    'object-fit: contain',
+    'border-radius: var(--radius-md)',
+    'display: block',
+  ].join(';');
+
+  img.onload = () => {
+    // Image loaded — swap it in, hide the SVG square
+    logoIconEl.style.display = 'none';
+    logoIconEl.parentNode.insertBefore(img, logoIconEl);
+    // Logo text stays visible beside the image
+  };
+
+  img.onerror = () => {
+    // logo.png not found — silently keep the existing SVG icon
+    img.remove();
+  };
+}
+
+/* ============================================================
    INIT
    ============================================================ */
 document.addEventListener('DOMContentLoaded', () => {
   initMobileNav();
+  initLogoAndFavicon();
   CompareTray.init();
 });
 
