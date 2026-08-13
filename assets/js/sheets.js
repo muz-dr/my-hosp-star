@@ -160,7 +160,13 @@ function rowToHospital(row) {
   // Generate or use provided hospital_id
   const name  = g('hospital_name') || g('hospital_id') || '';
   const state = g('state') || '';
-  const id    = g('hospital_id') || generateId(name, state);
+  const id    = String(g('hospital_id') || generateId(name, state)).trim();
+
+  // specialist_status: accept Yes/No, TRUE/FALSE, 1/0, or "Specialist"/"Non-Specialist"
+  const specRaw = g('specialist_status');
+  const specialistStatus = specRaw != null
+    ? ['yes','true','1','ya','specialist'].includes(String(specRaw).trim().toLowerCase())
+    : null;
 
   return {
     hospital_id:       id,
@@ -177,7 +183,7 @@ function rowToHospital(row) {
     website:           g('website'),
     hospital_type:     g('hospital_type'),
     hospital_category: g('hospital_category'),
-    specialist_status: toBool(g('specialist_status')),
+    specialist_status: specialistStatus,
     cluster_name:      g('cluster_name'),
     cluster_role:      g('cluster_role'),
     lead_hospital:     g('lead_hospital'),
