@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Methodology — Hospital Compare Malaysia</title>
+  <title>Methodology — My-Hosp-Star</title>
   <meta name="description" content="How hospital quality scores are calculated — HPIA, CliSQI, Cluster Performance, MyPSQ and Casemix methodology explained." />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -44,7 +44,7 @@
     <div class="container header-inner">
       <a href="../index.html" class="site-logo">
         <div class="logo-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><path d="M3 9l9-7 9 7v11a2 2 0 01-2 2H5a2 2 0 01-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div>
-        <div class="logo-text"><span class="logo-title">Hospital Compare Malaysia</span><span class="logo-sub">Kementerian Kesihatan Malaysia</span></div>
+        <div class="logo-text"><span class="logo-title">My-Hosp-Star</span><span class="logo-sub">Kementerian Kesihatan Malaysia</span></div>
       </a>
       <nav class="site-nav">
         <a href="../index.html" class="nav-link">Home</a>
@@ -88,7 +88,7 @@
               <div class="method-icon" style="background:var(--blue-50)">⭐</div>
               <h2 id="overall-h">Overall Hospital Quality Score</h2>
             </div>
-            <p>The overall hospital quality score follows the KKM HPIA 2025 Weighted Percentile–Point–Scoring Concept (PPS-C). It combines four quality domains into a single composite score on a 0–5 scale.</p>
+            <p>The overall hospital quality score follows the KKM HPIA 2025 Weighted Min-Max-Normalization–Scoring Concept (MMNS-C). It combines four quality domains into a single composite score on a 0–5 scale.</p>
             <div class="formula-box">
               <strong>Overall Score</strong> = <br>
               (HPIA Score × 0.50) +<br>
@@ -105,7 +105,7 @@
                 <tr><td>Casemix</td><td>Casemix Performance</td><td>10%</td></tr>
               </tbody>
             </table>
-            <p>If an authoritative overall score is present in the source dataset, that official score is displayed. The formula above is used only where no official composite score is provided.</p>
+            <p>Only the official score is displayed. The formula above might slightly differs with the current updates decided by the Technical Secretariat.</p>
             <p>The weights are configurable and will be updated as KKM publishes revised methodology for future reporting years.</p>
           </section>
 
@@ -115,17 +115,18 @@
               <div class="method-icon" style="background:var(--blue-50)">📊</div>
               <h2 id="hpia-h">HPIA <span class="weight-pill">50% weight</span></h2>
             </div>
-            <p><strong>Hospital Performance Indicator Assessment (HPIA)</strong> is the primary quality instrument used by KKM to evaluate hospital performance. It covers three major domains:</p>
+            <p><strong>Hospital Performance Indicator Assessment (HPIA)</strong> is the primary quality instrument used by KKM to evaluate hospital performance. It covers four major domains:</p>
             <ul>
-              <li><strong>Patient Safety</strong> — measures adverse events, infection control, and medication safety</li>
-              <li><strong>Clinical Effectiveness</strong> — measures outcomes, adherence to clinical standards, and evidence-based practice</li>
-              <li><strong>Patient-Centred Care</strong> — measures communication, responsiveness, and respect for patient preferences</li>
+              <li><strong>Health (Clinical Outcome)</strong></li>
+              <li><strong>Health (Quality Care)</strong></li>
+              <li><strong>Responsiveness</strong></li>
+              <li><strong>Fair Financing & Governance</strong></li>
             </ul>
             <h3>Scoring</h3>
-            <p>HPIA uses a Percentile–Point–Scoring Concept (PPS-C). Each indicator is scored relative to all hospitals nationally, then weighted and aggregated into a composite HPIA score on a 1–5 scale.</p>
-            <p>A higher HPIA score indicates better overall hospital performance relative to national peers.</p>
+            <p>Each indicator is scored relative to all hospitals type, then weighted and aggregated into a composite HPIA score on a 1–5 scale.</p>
+            <p>A higher HPIA score indicates better overall hospital performance relative to hospital type peers.</p>
             <h3>Reporting period</h3>
-            <p>HPIA is reported annually. The reporting year shown reflects the most recent available dataset.</p>
+            <p>Final HPIA is report is taken annually. The reporting year shown reflects the most recent available dataset.</p>
           </section>
 
           <!-- CliSQI -->
@@ -137,11 +138,11 @@
             <p><strong>Clinical Services Quality Indicators (CliSQI)</strong> are specific, measurable clinical outcome metrics tracked at the hospital level. They complement HPIA by providing granular clinical data.</p>
             <p>Examples of CliSQI indicators include:</p>
             <ul>
-              <li>Surgical Site Infection Rate</li>
-              <li>Unplanned Readmission Rate</li>
-              <li>Hospital-Acquired Infection Rate</li>
-              <li>Mortality rates for specific conditions</li>
-              <li>Blood transfusion rates</li>
+              <li>Moderate Traumatic Brain Injury (TBI) Case Fatality Rate</li>
+              <li>Rate of perforation following septoplasty procedure</li>
+              <li>Percentage of patients with functional improvement after rehabilitation care</li>
+              <li>ST Elevation Myocardial Infarction (STEMI) Case Fatality Rate</li>
+              <li>Incidence rate of peritonitis in adult patients on chronic peritoneal dialysis</li>
             </ul>
             <p>CliSQI is displayed as an informational indicator. It does not currently contribute to the overall composite score under the 2025 methodology.</p>
           </section>
@@ -251,7 +252,7 @@
   <footer class="site-footer">
     <div class="container">
       <div class="footer-bottom" style="border-top:none;padding-top:0">
-        <span>© <script>document.write(new Date().getFullYear())</script> Hospital Compare Malaysia</span>
+        <span>© <script>document.write(new Date().getFullYear())</script> My-Hosp-Star</span>
         <span>Data: Ministry of Health Malaysia (KKM)</span>
         <a href="about-data.html" style="color:rgba(255,255,255,0.5)">About the data</a>
       </div>
